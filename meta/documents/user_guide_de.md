@@ -3,7 +3,7 @@
 
 <div class="container-toc"></div>
 
-## Bei Shopping.com registrieren
+## Bei Treepodia.com registrieren
 
 Treepodia bietet die Möglichkeit, aus Artikelbildern automatisch erzeugte Produkt-Videos in die SingleArticle-Ansicht von Webshopartikeln einzubinden.
 
