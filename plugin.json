@@ -1,0 +1,24 @@
+{
+  "name": "ElasticExportTreepodiaCOM",
+  "description": "This plugin adds the format TreepodiaCOM to the Elastic Export.",
+  "namespace": "ElasticExportTreepodiaCOM",
+  "author": "plentymarkets GmbH",
+  "type": "export",
+  "authorIcon": "icon_author_xs.png",
+  "serviceProvider": "ElasticExportTreepodiaCOM\\ElasticExportTreepodiaCOMServiceProvider",
+  "license": "GNU AFFERO GENERAL PUBLIC LICENSE Version 3, 19 November 2007",
+  "pluginIcon": "icon_plugin_md.png",
+  "price": 0.00,
+  "shortDescription": {
+    "de": "Das Plugin treepodia.com fügt das Datenformat TreepodiaCOM zum Elastischen Export hinzu.",
+    "en": "This plugin adds the format TreepodiaCOM to the Elastic Export."
+  },
+  "categories": [
+    "3523"
+  ],
+  "version": "1.0.0",
+  "marketplaceName": {
+    "de": "treepodia.com",
+    "en": "treepodia.com"
+  }
+}
