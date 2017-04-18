@@ -1,5 +1,10 @@
 # Release Notes für Elastic Export treepodia.com
 
+## v1.0.2 (2017-04-18)
+
+### Behoben
+- Es wurde ein Fehler behoben, der dazu geführt hat, dass das Plugin nicht mehr gebaut werden konnte.
+
 ## v1.0.1 (2017-03-22)
 
 ### Behoben

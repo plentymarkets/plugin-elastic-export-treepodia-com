@@ -37,7 +37,7 @@ class TreepodiaCOM extends ResultFields
     {
         $settings = $this->arrayHelper->buildMapFromObjectList($formatSettings, 'key', 'value');
 
-        $reference = $settings->get('referrerId') ? $settings->get('referrerId') : self::KELKOO_BASIC_DE;
+        $reference = $settings->get('referrerId') ? $settings->get('referrerId') : -1;
 
         $itemDescriptionFields = ['texts.urlPath'];
         $itemDescriptionFields[] = 'texts.keywords';
