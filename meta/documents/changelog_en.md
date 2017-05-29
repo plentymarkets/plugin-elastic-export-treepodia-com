@@ -1,5 +1,10 @@
 # Release Notes for Elastic Export treepodia.com
 
+## v1.0.3 (2017-05-29)
+
+### Changed
+- The plugin Elastic Export is now required to use the plugin format TreepodiaCOM.
+
 ## v1.0.2 (2017-04-18)
 
 ### Fixed
