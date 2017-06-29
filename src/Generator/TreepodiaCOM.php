@@ -2,6 +2,8 @@
 
 namespace ElasticExportTreepodiaCOM\Generator;
 
+use ElasticExport\Helper\ElasticExportPriceHelper;
+use ElasticExport\Helper\ElasticExportStockHelper;
 use Plenty\Modules\Category\Models\CategoryBranch;
 use Plenty\Modules\DataExchange\Contracts\XMLPluginGenerator;
 use Plenty\Modules\Helper\Services\ArrayHelper;
@@ -15,9 +17,18 @@ use Plenty\Modules\Category\Contracts\CategoryRepositoryContract;
 use Plenty\Modules\Item\Manufacturer\Contracts\ManufacturerRepositoryContract;
 use Plenty\Modules\Item\Manufacturer\Models\Manufacturer;
 use Plenty\Modules\Category\Models\Category;
+use Plenty\Modules\Item\Search\Contracts\VariationElasticSearchScrollRepositoryContract;
+use Plenty\Plugin\Log\Loggable;
 
+/**
+ * Class TreepodiaCOM
+ *
+ * @package ElasticExportTreepodiaCOM\Generator
+ */
 class TreepodiaCOM extends XMLPluginGenerator
 {
+	use Loggable;
+
     /**
      * @var string
      */
@@ -42,6 +53,16 @@ class TreepodiaCOM extends XMLPluginGenerator
      * @var ElasticExportCoreHelper $elasticExportHelper
      */
     private $elasticExportHelper;
+
+	/**
+	 * @var ElasticExportStockHelper $elasticExportStockHelper
+	 */
+    private $elasticExportStockHelper;
+
+	/**
+	 * @var ElasticExportPriceHelper $elasticExportPriceHelper
+	 */
+    private $elasticExportPriceHelper;
 
     /*
      * @var ArrayHelper
@@ -70,6 +91,7 @@ class TreepodiaCOM extends XMLPluginGenerator
 
     /**
      * TreepodiaDE constructor.
+	 *
      * @param ArrayHelper $arrayHelper
      * @param CategoryBranchRepositoryContract $categoryBranchRepository
      * @param CategoryRepositoryContract $categoryRepository
@@ -91,151 +113,222 @@ class TreepodiaCOM extends XMLPluginGenerator
     }
 
     /**
-     * @param array $resultData
+     * @param VariationElasticSearchScrollRepositoryContract $elasticSearch
      * @param array $formatSettings
      * @param array $filter
      */
-    protected function generatePluginContent($resultData, array $formatSettings = [], array $filter = [])
+    protected function generatePluginContent($elasticSearch, array $formatSettings = [], array $filter = [])
     {
         $this->elasticExportHelper = pluginApp(ElasticExportCoreHelper::class);
-        if(is_array($resultData['documents']) && count($resultData['documents']) > 0)
-        {
-            $settings = $this->arrayHelper->buildMapFromObjectList($formatSettings, 'key', 'value');
+        $this->elasticExportStockHelper = pluginApp(ElasticExportStockHelper::class);
+        $this->elasticExportPriceHelper = pluginApp(ElasticExportPriceHelper::class);
+        
+		$settings = $this->arrayHelper->buildMapFromObjectList($formatSettings, 'key', 'value');
+		
+		$limitReached = false;
+		$lines = 0;
+		$startTime = microtime(true);
 
-            //Create a List of all VariationIds
-            $variationIdList = array();
-            foreach($resultData['documents'] as $variation)
-            {
-                $variationIdList[] = $variation['id'];
-            }
+        if($elasticSearch instanceof VariationElasticSearchScrollRepositoryContract)
+		{
+			do
+			{
+				if($limitReached === true)
+				{
+					break;
+				}
 
-            //Get the missing fields in ES from IDL
-            if(is_array($variationIdList) && count($variationIdList) > 0)
-            {
-                /**
-                 * @var \ElasticExportTreepodiaCOM\IDL_ResultList\TreepodiaCOM $idlResultList
-                 */
-                $idlResultList = pluginApp(\ElasticExportTreepodiaCOM\IDL_ResultList\TreepodiaCOM::class);
-                $idlResultList = $idlResultList->getResultList($variationIdList, $settings, $filter);
-            }
+				$this->getLogger(__METHOD__)->debug('ElasticExportTreepodiaCOM::log.writtenlines', ['lines written' => $lines]);
 
-            //Creates an array with the variationId as key to surpass the sorting problem
-            if(isset($idlResultList) && $idlResultList instanceof RecordList)
-            {
-                $this->createIdlArray($idlResultList);
-            }
-            
-            foreach($resultData['documents'] as $item)
-            {
-                if(!array_key_exists($item['id'], $this->idlVariations))
-                {
-                    continue;
-                }
+				$esStartTime = microtime(true);
 
-                $product = $this->createElement('product');
-                $this->root()->appendChild($product);
+				$resultList = $elasticSearch->execute();
 
-                // sku
-                $product->appendChild($this->createElement('sku', $item['data']['item']['id']));
+				$this->getLogger(__METHOD__)->debug('ElasticExportTreepodiaCOM::log.esDuration', [
+					'Elastic Search duration' => microtime(true) - $esStartTime,
+				]);
 
-                // price
-                $product->appendChild($this->createElement('price', number_format((float)$this->idlVariations[$item['id']]['variationRetailPrice.price'], 2)));
+				if(count($resultList['error']) > 0)
+				{
+					$this->getLogger(__METHOD__)->error('ElasticExportTreepodiaCOM::log.occurredElasticSearchErrors', [
+						'error message' => $resultList['error'],
+					]);
+				}
 
-                // name
-                $product->appendChild($this->createElement('name', $this->elasticExportHelper->getName($item, $settings)));
+				$buildRowStartTime = microtime(true);
 
-                // commodity
-                $category = $this->getTopLevelCategory($item, $settings);
+				if(is_array($resultList['documents']) && count($resultList['documents']) > 0)
+				{
+					foreach($resultList['documents'] as $item)
+					{
+						if($this->elasticExportStockHelper->isFilteredByStock($item, $filter))
+						{
+							continue;
+						}
+						
+						try
+						{
+							$this->buildProduct($item, $settings);
+							$lines++;
+						}
+						catch(\Throwable $exception)
+						{
+							$this->getLogger(__METHOD__)->error('ElasticExportTreepodiaCOM::log.buildRowError', [
+								'error' => $exception->getMessage(),
+								'line' => $exception->getLine(),
+								'variation ID' => $item['id']
+							]);
+						}
 
-                if($category instanceof Category)
-                {
-                    foreach($category->details as $detail)
-                    {
-                        if($detail->lang == $settings->get('lang'))
-                        {
-                            $product->appendChild($this->createElement('commodity', $detail->name));
-                        }
-                    }
-                }
+						$this->getLogger(__METHOD__)->debug('ElasticExportTreepodiaCOM::log.buildRowDuration', [
+							'Build Row duration' => microtime(true) - $buildRowStartTime,
+						]);
 
+						if($lines == $filter['limit'])
+						{
+							$limitReached = true;
+							break;
+						}
+					}
+				}
+			}
+			while($elasticSearch->hasNext());
+		}
 
-                // description
-                $product->appendChild($description = $this->createElement('description'));
-                $description->appendChild($this->createCDATASection($this->elasticExportHelper->getDescription($item, $settings)));
-
-                // brand-name, brand-logo
-                if((int) $item['data']['item']['manufacturer']['id'] > 0)
-                {
-                    $manufacturer = $this->getProducer((int)$item['data']['item']['manufacturer']['id']);
-
-                    if($manufacturer instanceof Manufacturer)
-                    {
-                        if(strlen($manufacturer->externalName) > 0)
-                        {
-                            $product->appendChild($brandName = $this->createElement('brand-name'));
-                            $brandName->appendChild($this->createCDATASection($manufacturer->externalName));
-                        }
-                        elseif(strlen($manufacturer->name) > 0)
-                        {
-                            $product->appendChild($brandName = $this->createElement('brand-name'));
-                            $brandName->appendChild($this->createCDATASection($manufacturer->name));
-                        }
-
-                        if(strlen($manufacturer->logo) > 0)
-                        {
-                            $product->appendChild($this->createElement('brand_logo', $manufacturer->logo));
-                        }
-                    }
-                }
-
-                // page-url
-                $product->appendChild($pageUrl = $this->createElement('page-url'));
-                $pageUrl->appendChild($this->createCDATASection($this->elasticExportHelper->getUrl($item, $settings, false)));
-
-                // image-url
-                foreach($this->elasticExportHelper->getImageList($item, $settings) as $image)
-                {
-                    $product->appendChild($this->createElement('image-url', $image));
-                }
-
-                // catch-phrase
-                foreach($this->getCatchPhraseList($item) as $catchPhrase)
-                {
-                    $product->appendChild($this->createElement('catch-phrase', htmlspecialchars($catchPhrase)));
-                }
-
-                $deliveryCost = $this->elasticExportHelper->getShippingCost($item['data']['item']['id'], $settings);
-                if(is_null($deliveryCost))
-                {
-                    $deliveryCost = 0.00;
-                }
-
-
-                // free-shipping
-                if($deliveryCost <= 0.00)
-                {
-                    $product->appendChild($this->createElement('free-shipping', 1));
-                }
-
-                // youtubetag, Video-Sitemaptag
-                foreach($this->getKeywords($item, $settings) as $keyword)
-                {
-                    $product->appendChild($this->createElement('youtubetag', htmlspecialchars(trim($keyword))));
-                    $product->appendChild($this->createElement('Video-Sitemaptag', htmlspecialchars(trim($keyword))));
-                }
-            }
-
-            $this->build();
-        }
+		$this->getLogger(__METHOD__)->debug('ElasticExportTreepodiaCOM::log.fileGenerationDuration', [
+			'Whole file generation duration' => microtime(true) - $startTime,
+		]);
     }
+
+	/**
+	 * @param array $item
+	 * @param KeyValue $settings
+	 */
+    private function buildProduct($item, $settings)
+	{
+		$product = $this->createElement('product');
+		$this->root()->appendChild($product);
+
+		// sku
+		$product->appendChild($this->createElement('sku', $item['data']['item']['id']));
+
+		// price
+		$priceList = $this->elasticExportPriceHelper->getPriceList($item, $settings);
+		$priceTag = $this->createElement('price');
+
+		$product->appendChild($priceTag);
+
+		$priceTag->appendChild($this->createElement('value', (string)$priceList['price']));
+		$priceTag->appendChild($this->createElement('sale', (string)$priceList['recommendedRetailPrice']));
+
+		// name
+		$product->appendChild($this->createElement('name', $this->elasticExportHelper->getMutatedName($item, $settings)));
+
+		// category, top category or full path allowed
+		$category = $this->getTopLevelCategory($item, $settings);
+
+		if($category instanceof Category)
+		{
+			foreach($category->details as $detail)
+			{
+				if($detail->lang == $settings->get('lang'))
+				{
+					if(strlen(trim($detail->name)))
+					{
+						$product->appendChild($this->createElement('category', (string)$detail->name));
+					}
+				}
+			}
+		}
+
+		// description
+		$product->appendChild($description = $this->createElement('description'));
+		$description->appendChild($this->createCDATASection($this->elasticExportHelper->getMutatedDescription($item, $settings)));
+
+		// brand name and logo
+		if((int) $item['data']['item']['manufacturer']['id'] > 0)
+		{
+			$manufacturer = $this->getProducer((int)$item['data']['item']['manufacturer']['id']);
+
+			if($manufacturer instanceof Manufacturer)
+			{
+				$product->appendChild($brandTag = $this->createElement('brand'));
+
+				if(strlen($manufacturer->externalName) > 0)
+				{
+					$brandTag->appendChild($name = $this->createElement('name'));
+					$name->appendChild($this->createCDATASection($manufacturer->externalName));
+				}
+				elseif(strlen($manufacturer->name) > 0)
+				{
+					$brandTag->appendChild($name = $this->createElement('name'));
+					$name->appendChild($this->createCDATASection($manufacturer->name));
+				}
+
+				if(strlen($manufacturer->logo) > 0)
+				{
+					$brandTag->appendChild($name = $this->createElement('logo'));
+					$name->appendChild($this->createCDATASection($manufacturer->logo));
+				}
+			}
+		}
+
+		// page-url
+		$product->appendChild($pageUrl = $this->createElement('page-url'));
+		$pageUrl->appendChild($this->createCDATASection($this->elasticExportHelper->getMutatedUrl($item, $settings, false)));
+
+		// image-url
+		$product->appendChild($imageTag = $this->createElement('image'));
+
+		foreach($this->elasticExportHelper->getImageList($item, $settings) as $image)
+		{
+			$imageTag->appendChild($this->createElement('url', $image));
+		}
+
+		// catch-phrase
+		foreach($this->getCatchPhraseList($item) as $catchPhrase)
+		{
+			$product->appendChild($this->createElement('catch-phrase', htmlspecialchars($catchPhrase)));
+		}
+
+		// shipping
+		$deliveryCost = $this->elasticExportHelper->getShippingCost($item['data']['item']['id'], $settings);
+
+		if(is_null($deliveryCost))
+		{
+			$deliveryCost = 0.00;
+		}
+
+		if($deliveryCost <= 0.00)
+		{
+			$product->appendChild($this->createElement('shipping', 1));
+		}
+
+		// tags
+		$keyList = [];
+
+		foreach($this->getKeywords($item, $settings) as $keyword)
+		{
+			if(strlen($keyword))
+			{
+				$keyList[] = $keyword;
+			}
+		}
+
+		$product->appendChild($this->createElement('tags', implode(', ', $keyList)));
+
+		// close product tag
+		$this->build();
+	}
 
     /**
      * Get the top level category.
+	 *
      * @param array $item
      * @param KeyValue $settings
-     * @return Category
+     * @return Category|null
      */
-    public function getTopLevelCategory($item, KeyValue $settings):Category
+    public function getTopLevelCategory($item, KeyValue $settings)
     {
         $lang = $settings->get('lang') ? $settings->get('lang') : 'de';
 
@@ -277,6 +370,7 @@ class TreepodiaCOM extends XMLPluginGenerator
 
     /**
      * Get producer.
+	 *
      * @param int $manufacturerId
      * @return Manufacturer
      */
@@ -287,8 +381,9 @@ class TreepodiaCOM extends XMLPluginGenerator
 
     /**
      * Get catch phrase list.
+	 *
      * @param array $item
-     * @return array<string>
+     * @return array
      */
     private function getCatchPhraseList($item):array
     {
@@ -314,15 +409,17 @@ class TreepodiaCOM extends XMLPluginGenerator
 
     /**
      * Get keywords.
+	 *
      * @param array $item
      * @param KeyValue $settings
-     * @return array<string>
+     * @return array
      */
     public function getKeywords(array $item, KeyValue $settings):array
     {
         $list = explode(',', $item['data']['texts'][0]['keywords']);
 
         $category = $this->getTopLevelCategory($item, $settings);
+
         if($category instanceof Category)
         {
             foreach($category->details as $detail)
@@ -335,27 +432,5 @@ class TreepodiaCOM extends XMLPluginGenerator
         }
 
         return $list;
-    }
-
-    /**
-     * @param RecordList $idlResultList
-     */
-    private function createIdlArray($idlResultList)
-    {
-        if($idlResultList instanceof RecordList)
-        {
-            foreach($idlResultList as $idlVariation)
-            {
-                if($idlVariation instanceof Record)
-                {
-                    $this->idlVariations[$idlVariation->variationBase->id] = [
-                        'itemBase.id' => $idlVariation->itemBase->id,
-                        'variationBase.id' => $idlVariation->variationBase->id,
-                        'variationStock.stockNet' => $idlVariation->variationStock->stockNet,
-                        'variationRetailPrice.price' => $idlVariation->variationRetailPrice->price,
-                    ];
-                }
-            }
-        }
     }
 }
