@@ -193,6 +193,9 @@ class TreepodiaCOM extends XMLPluginGenerator
 				}
 			}
 			while($elasticSearch->hasNext());
+
+			// finish file
+			$this->build();
 		}
 
 		$this->getLogger(__METHOD__)->debug('ElasticExportTreepodiaCOM::log.fileGenerationDuration', [
@@ -219,7 +222,7 @@ class TreepodiaCOM extends XMLPluginGenerator
 		$product->appendChild($priceTag);
 
 		$priceTag->appendChild($this->createElement('value', (string)$priceList['price']));
-		$priceTag->appendChild($this->createElement('sale', (string)$priceList['recommendedRetailPrice']));
+		$priceTag->appendChild($this->createElement('sale', (string)$priceList['specialPrice']));
 
 		// name
 		$product->appendChild($this->createElement('name', $this->elasticExportHelper->getMutatedName($item, $settings)));
@@ -292,16 +295,11 @@ class TreepodiaCOM extends XMLPluginGenerator
 		}
 
 		// shipping
-		$deliveryCost = $this->elasticExportHelper->getShippingCost($item['data']['item']['id'], $settings);
+		$shippingCost = $this->elasticExportHelper->getShippingCost($item['data']['item']['id'], $settings);
 
-		if(is_null($deliveryCost))
+		if(!is_null($shippingCost))
 		{
-			$deliveryCost = 0.00;
-		}
-
-		if($deliveryCost <= 0.00)
-		{
-			$product->appendChild($this->createElement('shipping', 1));
+			$product->appendChild($this->createElement('shipping', $shippingCost));
 		}
 
 		// tags
@@ -316,9 +314,6 @@ class TreepodiaCOM extends XMLPluginGenerator
 		}
 
 		$product->appendChild($this->createElement('tags', implode(', ', $keyList)));
-
-		// close product tag
-		$this->build();
 	}
 
     /**
