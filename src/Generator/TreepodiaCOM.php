@@ -210,7 +210,7 @@ class TreepodiaCOM extends XMLPluginGenerator
 		$this->root()->appendChild($product);
 
 		// sku
-		$product->appendChild($this->createElement('sku', $item['data']['item']['id']));
+		$product->appendChild($this->createElement('sku', $item['id']));
 
 		// price
 		$priceList = $this->elasticExportPriceHelper->getPriceList($item, $settings);
@@ -225,7 +225,7 @@ class TreepodiaCOM extends XMLPluginGenerator
 		$product->appendChild($this->createElement('name', $this->elasticExportHelper->getMutatedName($item, $settings)));
 
 		// category, top category or full path allowed
-		$category = $this->getTopLevelCategory($item, $settings);
+		$category = $this->getCategoryPath($item, $settings);
 
 		if($category instanceof Category)
 		{
@@ -322,19 +322,19 @@ class TreepodiaCOM extends XMLPluginGenerator
 	}
 
     /**
-     * Get the top level category.
+     * Get the whole category path.
 	 *
      * @param array $item
      * @param KeyValue $settings
-     * @return Category|null
+     * @return string
      */
-    public function getTopLevelCategory($item, KeyValue $settings)
+    public function getCategoryPath($item, KeyValue $settings)
     {
         $lang = $settings->get('lang') ? $settings->get('lang') : 'de';
 
         if(is_null($item['data']['defaultCategories'][0]['id']))
         {
-            return null;
+            return '';
         }
 
         $categoryBranch = $this->categoryBranchRepository->find($item['data']['defaultCategories'][0]['id']);
@@ -342,30 +342,36 @@ class TreepodiaCOM extends XMLPluginGenerator
         if(!is_null($categoryBranch) && $categoryBranch instanceof CategoryBranch)
         {
             $list = [
-                $categoryBranch->category6Id,
-                $categoryBranch->category5Id,
-                $categoryBranch->category4Id,
-                $categoryBranch->category3Id,
-                $categoryBranch->category2Id,
-                $categoryBranch->category1Id
+                $categoryBranch->category1Id,
+				$categoryBranch->category2Id,
+				$categoryBranch->category3Id,
+				$categoryBranch->category4Id,
+				$categoryBranch->category5Id,
+				$categoryBranch->category6Id,
             ];
 
             $categoryList = [];
 
-            foreach($list AS $category)
+            foreach($list AS $categoryId)
             {
-                if($category > 0)
-                {
-                    $categoryList[] = $category;
-                }
+            	if(!is_null($categoryId))
+				{
+					$category = $this->categoryRepository->get((int) $categoryId, $lang);
+
+					if($category instanceof Category)
+					{
+						foreach($category->details as $detail)
+						{
+							$categoryList[] = $detail->name;
+						}
+					}
+				}
             }
 
-            $categoryId = $categoryList[0];
-
-            return $this->categoryRepository->get((int) $categoryId, $lang);
+            return implode(' > ', $categoryList);
         }
 
-        return null;
+        return '';
     }
 
     /**
@@ -418,7 +424,7 @@ class TreepodiaCOM extends XMLPluginGenerator
     {
         $list = explode(',', $item['data']['texts'][0]['keywords']);
 
-        $category = $this->getTopLevelCategory($item, $settings);
+        $category = $this->getCategoryPath($item, $settings);
 
         if($category instanceof Category)
         {
