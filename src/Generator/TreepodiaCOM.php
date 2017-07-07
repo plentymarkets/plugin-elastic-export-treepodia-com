@@ -54,6 +54,17 @@ class TreepodiaCOM extends XMLPluginGenerator
 	 */
 	private $manufacturerCache = [];
 
+	/**
+	 * @var array
+	 */
+	private $attributeCache = [];
+
+	/**
+	 * @var array
+	 */
+	private $attributeValueCache = [];
+
+
     /**
      * @var ElasticExportCoreHelper $elasticExportHelper
      */
@@ -298,6 +309,34 @@ class TreepodiaCOM extends XMLPluginGenerator
 			$imageTag->appendChild($this->createElement('url', $image));
 		}
 
+		// attributes
+		if(count($item['data']['attributes']))
+		{
+			foreach($item['data']['attributes'] as $attribute)
+			{
+				if(!is_null($attribute['attributeId']))
+				{
+					$product->appendChild($attributeTag = $this->createElement('attribute'));
+
+					$attributeName = $this->getAttributeName($attribute, $settings);
+
+					if(strlen($attributeName))
+					{
+						$attributeTag->appendChild($attributeNameTag = $this->createElement('name'));
+						$attributeNameTag->appendChild($this->createCDATASection($attributeName));
+					}
+
+					$attributeValueName = $this->getAttributeValueName($attribute, $settings);
+
+					if(strlen($attributeValueName))
+					{
+						$attributeTag->appendChild($attributeValueTag = $this->createElement('value'));
+						$attributeValueTag->appendChild($this->createCDATASection($attributeValueName));
+					}
+				}
+			}
+		}
+
 		// catch-phrase
 		foreach($this->getCatchPhraseList($item) as $catchPhrase)
 		{
@@ -323,7 +362,11 @@ class TreepodiaCOM extends XMLPluginGenerator
 			}
 		}
 
-		$product->appendChild($this->createElement('tags', implode(', ', $keyList)));
+		if(count($keyList))
+		{
+			$product->appendChild($tagsTag = $this->createElement('tags'));
+			$tagsTag->appendChild($this->createCDATASection(implode(', ', $keyList)));
+		}
 	}
 
     /**
@@ -457,4 +500,34 @@ class TreepodiaCOM extends XMLPluginGenerator
 
         return $list;
     }
+
+	/**
+	 * @param array $attribute
+	 * @param KeyValue $settings
+	 * @return string
+	 */
+    private function getAttributeName($attribute, $settings):string
+	{
+		if(!in_array($attribute['attributeId'], $this->attributeCache))
+		{
+			$this->attributeCache[$attribute['attributeId']] = $this->elasticExportHelper->getSingleAttributeName($attribute['attributeId'], $settings);
+		}
+
+		return $this->attributeCache[$attribute['attributeId']];
+	}
+
+	/**
+	 * @param $attribute
+	 * @param $settings
+	 * @return string
+	 */
+	private function getAttributeValueName($attribute, $settings):string
+	{
+		if(!in_array($attribute['valueId'], $this->attributeValueCache))
+		{
+			$this->attributeCache[$attribute['valueId']] = $this->elasticExportHelper->getSingleAttributeValueName($attribute['valueId'], $settings);
+		}
+
+		return $this->attributeCache[$attribute['valueId']];
+	}
 }

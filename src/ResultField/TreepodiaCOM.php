@@ -289,6 +289,8 @@ class TreepodiaCOM extends ResultFields
 
 			'attributes'   => [
 				'attributeValueSetId',
+				'attributeId',
+				'valueId'
 			],
 
 			'properties'    => [
