@@ -49,6 +49,11 @@ class TreepodiaCOM extends XMLPluginGenerator
      */
     protected $preserveWhiteSpace = true;
 
+	/**
+	 * @var array $manufacturerCache
+	 */
+	private $manufacturerCache = [];
+
     /**
      * @var ElasticExportCoreHelper $elasticExportHelper
      */
@@ -83,11 +88,6 @@ class TreepodiaCOM extends XMLPluginGenerator
      * ManufacturerRepositoryContract $manufacturerRepository
      */
     private $manufacturerRepository;
-
-    /**
-     * @var array $idlVariations
-     */
-    private $idlVariations = array();
 
     /**
      * TreepodiaDE constructor.
@@ -217,12 +217,22 @@ class TreepodiaCOM extends XMLPluginGenerator
 
 		// price
 		$priceList = $this->elasticExportPriceHelper->getPriceList($item, $settings);
-		$priceTag = $this->createElement('price');
 
-		$product->appendChild($priceTag);
+		if(strlen((string)$priceList['price']) || strlen((string)$priceList['specialPrice']))
+		{
+			$priceTag = $this->createElement('price');
+			$product->appendChild($priceTag);
 
-		$priceTag->appendChild($this->createElement('value', (string)$priceList['price']));
-		$priceTag->appendChild($this->createElement('sale', (string)$priceList['specialPrice']));
+			if(strlen((string)$priceList['price']))
+			{
+				$priceTag->appendChild($this->createElement('value', (string)$priceList['price']));
+			}
+
+			if(strlen((string)$priceList['specialPrice']))
+			{
+				$priceTag->appendChild($this->createElement('sale', (string)$priceList['specialPrice']));
+			}
+		}
 
 		// name
 		$product->appendChild($this->createElement('name', $this->elasticExportHelper->getMutatedName($item, $settings)));
@@ -251,7 +261,7 @@ class TreepodiaCOM extends XMLPluginGenerator
 		// brand name and logo
 		if((int) $item['data']['item']['manufacturer']['id'] > 0)
 		{
-			$manufacturer = $this->getProducer((int)$item['data']['item']['manufacturer']['id']);
+			$manufacturer = $this->getManufacturer((int)$item['data']['item']['manufacturer']['id']);
 
 			if($manufacturer instanceof Manufacturer)
 			{
@@ -370,14 +380,27 @@ class TreepodiaCOM extends XMLPluginGenerator
     }
 
     /**
-     * Get producer.
+     * Returns the manufacturer by ID.
 	 *
      * @param int $manufacturerId
      * @return Manufacturer
      */
-    public function getProducer(int $manufacturerId):Manufacturer
+    public function getManufacturer(int $manufacturerId):Manufacturer
     {
-        return $this->manufacturerRepository->findById($manufacturerId);
+    	if(!in_array($manufacturerId, $this->manufacturerCache))
+		{
+			/**
+			 * @var Manufacturer $manufacturer
+			 */
+			$manufacturer = $this->manufacturerRepository->findById($manufacturerId);
+
+			if($manufacturer instanceof Manufacturer)
+			{
+				$this->manufacturerCache[$manufacturerId] = $manufacturer;
+			}
+		}
+
+		return $this->manufacturerCache[$manufacturerId];
     }
 
     /**
