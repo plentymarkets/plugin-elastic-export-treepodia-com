@@ -19,7 +19,8 @@ class ElasticExportTreepodiaCOMServiceProvider extends DataExchangeServiceProvid
             'ElasticExportTreepodiaCOM\ResultField\TreepodiaCOM',
             'ElasticExportTreepodiaCOM\Generator\TreepodiaCOM',
             '',
-            true
+            true,
+			true
         );
     }
 }

@@ -8,8 +8,11 @@ use Plenty\Modules\Helper\Services\ArrayHelper;
 use Plenty\Modules\Item\Search\Mutators\ImageMutator;
 use Plenty\Modules\Cloud\ElasticSearch\Lib\Source\Mutator\BuiltIn\LanguageMutator;
 use Plenty\Modules\Item\Search\Mutators\DefaultCategoryMutator;
+use Plenty\Modules\Item\Search\Mutators\KeyMutator;
+
 /**
  * Class TreepodiaCOM
+ *
  * @package ElasticExport\ResultFields
  */
 class TreepodiaCOM extends ResultFields
@@ -20,7 +23,8 @@ class TreepodiaCOM extends ResultFields
     private $arrayHelper;
 
     /**
-     * Geizhals constructor.
+     * TreepodiaCOM constructor.
+	 *
      * @param ArrayHelper $arrayHelper
      */
     public function __construct(ArrayHelper $arrayHelper)
@@ -30,6 +34,7 @@ class TreepodiaCOM extends ResultFields
 
     /**
      * Generate result fields.
+	 *
      * @param  array $formatSettings = []
      * @return array
      */
@@ -41,6 +46,7 @@ class TreepodiaCOM extends ResultFields
 
         $itemDescriptionFields = ['texts.urlPath'];
         $itemDescriptionFields[] = 'texts.keywords';
+		$itemDescriptionFields[] = 'texts.lang';
 
         switch($settings->get('nameId'))
         {
@@ -58,8 +64,7 @@ class TreepodiaCOM extends ResultFields
                 break;
         }
 
-        if($settings->get('descriptionType') == 'itemShortDescription'
-            || $settings->get('previewTextType') == 'itemShortDescription')
+        if($settings->get('descriptionType') == 'itemShortDescription' || $settings->get('previewTextType') == 'itemShortDescription')
         {
             $itemDescriptionFields[] = 'texts.shortDescription';
         }
@@ -71,29 +76,47 @@ class TreepodiaCOM extends ResultFields
         {
             $itemDescriptionFields[] = 'texts.description';
         }
+
         $itemDescriptionFields[] = 'texts.technicalData';
 
         //Mutator
+
         /**
          * @var ImageMutator $imageMutator
          */
         $imageMutator = pluginApp(ImageMutator::class);
+
         if($imageMutator instanceof ImageMutator)
         {
             $imageMutator->addMarket($reference);
         }
+
         /**
          * @var LanguageMutator $languageMutator
          */
         $languageMutator = pluginApp(LanguageMutator::class, [[$settings->get('lang')]]);
+
         /**
          * @var DefaultCategoryMutator $defaultCategoryMutator
          */
         $defaultCategoryMutator = pluginApp(DefaultCategoryMutator::class);
+
         if($defaultCategoryMutator instanceof DefaultCategoryMutator)
         {
             $defaultCategoryMutator->setPlentyId($settings->get('plentyId'));
         }
+
+		/**
+		 * @var KeyMutator
+		 */
+		$keyMutator = pluginApp(KeyMutator::class);
+
+		if($keyMutator instanceof KeyMutator)
+		{
+			$keyMutator->setKeyList($this->getKeyList());
+			$keyMutator->setNestedKeyList($this->getNestedKeyList());
+		}
+
         $fields = [
             [
                 //item
@@ -110,6 +133,7 @@ class TreepodiaCOM extends ResultFields
                 'variation.stockLimitation',
                 'variation.vatId',
                 'variation.model',
+				'variation.id',
 
                 //images
                 'images.item.urlMiddle',
@@ -145,10 +169,10 @@ class TreepodiaCOM extends ResultFields
                 'attributes.attributeId',
                 'attributes.valueId',
             ],
-
             [
                 $languageMutator,
-                $defaultCategoryMutator
+                $defaultCategoryMutator,
+				$keyMutator
             ],
         ];
 
@@ -164,4 +188,116 @@ class TreepodiaCOM extends ResultFields
 
         return $fields;
     }
+
+	/**
+	 * @return array
+	 */
+	private function getKeyList():array
+	{
+		$keyList = [
+			//item
+			'item.id',
+			'item.manufacturer.id',
+			'item.free1',
+			'item.free2',
+			'item.free3',
+			'item.free4',
+
+			//variation
+			'variation.availability.id',
+			'variation.stockLimitation',
+			'variation.vatId',
+			'variation.model',
+			'variation.isMain',
+			'variation.id',
+
+			//unit
+			'unit.content',
+			'unit.id',
+		];
+
+		return $keyList;
+	}
+
+	/**
+	 * @return array
+	 */
+	private function getNestedKeyList():array
+	{
+		$nestedKeyList['keys'] = [
+			//images
+			'images.all',
+
+			//sku
+			'skus',
+
+			//texts
+			'texts',
+
+			//defaultCategories
+			'defaultCategories',
+
+			//barcodes
+			'barcodes',
+
+			//attributes
+			'attributes',
+		];
+
+		$nestedKeyList['nestedKeys'] = [
+			'images.item' => [
+				'urlMiddle',
+				'urlPreview',
+				'urlSecondPreview',
+				'url',
+				'path',
+				'position',
+			],
+
+			'images.variation' => [
+				'urlMiddle',
+				'urlPreview',
+				'urlSecondPreview',
+				'url',
+				'path',
+				'position',
+			],
+
+			'skus' => [
+				'sku'
+			],
+
+			'texts'  => [
+				'urlPath',
+				'name1',
+				'name2',
+				'name3',
+				'shortDescription',
+				'description',
+				'technicalData',
+				'lang'
+			],
+
+			'defaultCategories' => [
+				'id'
+			],
+
+			'barcodes'  => [
+				'code',
+				'type',
+			],
+
+			'attributes'   => [
+				'attributeValueSetId',
+				'attributeId',
+				'valueId'
+			],
+
+			'properties'    => [
+				'property.id',
+			]
+		];
+
+		return $nestedKeyList;
+	}
 }

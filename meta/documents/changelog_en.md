@@ -1,5 +1,15 @@
 # Release Notes for Elastic Export treepodia.com
 
+## v1.0.4 (2017-06-30)
+
+### Changed
+- The logic of the generator was adjusted to improve the performance and the stability.
+- The XML structure was updated.
+- The whole category path will be exported, instead of the main category.
+
+### Fixed
+- The SKU will now be exported based on the variation ID, instead of item ID.
+
 ## v1.0.3 (2017-05-29)
 
 ### Changed
