@@ -170,9 +170,9 @@ class TreepodiaCOM extends ResultFields
                 'attributes.valueId',
             ],
             [
-            	$keyMutator,
                 $languageMutator,
-                $defaultCategoryMutator
+                $defaultCategoryMutator,
+				$keyMutator
             ],
         ];
 
