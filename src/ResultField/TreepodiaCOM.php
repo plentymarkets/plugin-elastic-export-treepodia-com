@@ -263,10 +263,6 @@ class TreepodiaCOM extends ResultFields
 				'position',
 			],
 
-			'skus' => [
-				'sku'
-			],
-
 			'texts'  => [
 				'urlPath',
 				'name1',
