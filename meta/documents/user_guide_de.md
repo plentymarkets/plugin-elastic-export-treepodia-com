@@ -152,7 +152,7 @@ In der folgenden Tabelle finden Sie spezifische Hinweise zu den Einstellungen, F
         </td>
         <td>
             <b>Pflichtfeld</b><br>
-            <b>Inhalt:</b> Die <b>SKU</b> der Variante auf Basis der gewählten Auftragsherkunft in den Formateinstellungen.
+            Die <b>SKU</b> der Variante auf Basis der gewählten Auftragsherkunft in den Formateinstellungen.
         </td>        
     </tr>
     <tr>
@@ -160,7 +160,7 @@ In der folgenden Tabelle finden Sie spezifische Hinweise zu den Einstellungen, F
             price.value
         </td>
         <td>
-            <b>Inhalt:</b> Der <b>Verkaufspreis</b>.
+            Der <b>Verkaufspreis</b>.
         </td>        
     </tr>
     <tr>
@@ -168,7 +168,7 @@ In der folgenden Tabelle finden Sie spezifische Hinweise zu den Einstellungen, F
 			price.sale
 		</td>
 		<td>
-			<b>Inhalt:</b> Der <b>Angebotspreis</b>.
+			Der <b>Angebotspreis</b>.
 		</td>        
 	</tr>
     <tr>
@@ -177,7 +177,7 @@ In der folgenden Tabelle finden Sie spezifische Hinweise zu den Einstellungen, F
         </td>
         <td>
             <b>Pflichtfeld</b><br>
-            <b>Inhalt:</b> Der <b>Name</b> des Artikels abhängig von der gewählten Formateinstellungen <b>Artikelname</b>.
+            Der <b>Name</b> des Artikels abhängig von der gewählten Formateinstellungen <b>Artikelname</b>.
         </td>        
     </tr>
     <tr>
@@ -186,7 +186,7 @@ In der folgenden Tabelle finden Sie spezifische Hinweise zu den Einstellungen, F
         </td>
         <td>
             <b>Pflichtfeld</b><br>
-            <b>Inhalt:</b> Der <b>Kategoriepfad der Standard-Kategorie</b> für den in den Formateinstellungen definierten <b>Mandanten</b>.
+            Der <b>Kategoriepfad der Standard-Kategorie</b> für den in den Formateinstellungen definierten <b>Mandanten</b>.
         </td>        
     </tr>
     <tr>
@@ -195,7 +195,7 @@ In der folgenden Tabelle finden Sie spezifische Hinweise zu den Einstellungen, F
         </td>
         <td>
         	<b>Pflichtfeld</b><br>
-            <b>Inhalt:</b> Entsprechend der Formateinstellung <b>Beschreibung</b>.
+            Entsprechend der Formateinstellung <b>Beschreibung</b>.
         </td>        
     </tr>
     <tr>
@@ -203,7 +203,7 @@ In der folgenden Tabelle finden Sie spezifische Hinweise zu den Einstellungen, F
             brand.name
         </td>
         <td>
-            <b>Inhalt:</b> Der <b>Name des Herstellers</b> des Artikels. Der <b>Externe Name</b> unter <b>Einstellungen » Artikel » Hersteller</b> wird bevorzugt, wenn vorhanden.
+            Der <b>Name des Herstellers</b> des Artikels. Der <b>Externe Name</b> unter <b>Einstellungen » Artikel » Hersteller</b> wird bevorzugt, wenn vorhanden.
         </td>        
     </tr>
     <tr>
@@ -211,7 +211,7 @@ In der folgenden Tabelle finden Sie spezifische Hinweise zu den Einstellungen, F
 			brand.logo
 		</td>
 		<td>
-			<b>Inhalt:</b> Das <b>Logo des Herstellers</b> des Artikels.
+			Das <b>Logo des Herstellers</b> des Artikels.
 		</td>        
 	</tr>
     <tr>
@@ -220,7 +220,7 @@ In der folgenden Tabelle finden Sie spezifische Hinweise zu den Einstellungen, F
         </td>
         <td>
         	<b>Pflichtfeld</b><br>
-            <b>Inhalt:</b> Die Produkt-URL gemäß der Formateinstellung <b>Produkt-URL</b> und <b>Auftragsherkunft</b>
+            Die Produkt-URL gemäß der Formateinstellung <b>Produkt-URL</b> und <b>Auftragsherkunft</b>
         </td>        
     </tr>
     <tr>
@@ -228,7 +228,7 @@ In der folgenden Tabelle finden Sie spezifische Hinweise zu den Einstellungen, F
             image-url
         </td>
         <td>
-            <b>Inhalt:</b> URL zu dem Bild gemäß der Formateinstellungen <b>Bild</b>. Variantenbilder werden vor Artikelbildern priorisiert.
+            URL zu dem Bild gemäß der Formateinstellungen <b>Bild</b>. Variantenbilder werden vor Artikelbildern priorisiert.
         </td>        
     </tr>
     <tr>
@@ -236,7 +236,7 @@ In der folgenden Tabelle finden Sie spezifische Hinweise zu den Einstellungen, F
             attribute.name
         </td>
         <td>
-            <b>Inhalt:</b> Der Attributsname der Artikelvariante.
+            Der Attributsname der Artikelvariante.
         </td>        
     </tr>
     <tr>
@@ -244,7 +244,7 @@ In der folgenden Tabelle finden Sie spezifische Hinweise zu den Einstellungen, F
 			attribute.value
 		</td>
 		<td>
-			<b>Inhalt:</b> Der Attributswertname der Artikelvariante.
+			Der Attributswertname der Artikelvariante.
 		</td>        
 	</tr>
     <tr>
@@ -252,7 +252,7 @@ In der folgenden Tabelle finden Sie spezifische Hinweise zu den Einstellungen, F
             catch-phrase
         </td>
         <td>
-            <b>Inhalt:</b> Die Freitextfelder 1, 2, 3 und 4, falls am Artikel konfiguriert.
+            Die Freitextfelder 1, 2, 3 und 4, falls am Artikel konfiguriert.
         </td>        
     </tr>
     <tr>
@@ -260,7 +260,7 @@ In der folgenden Tabelle finden Sie spezifische Hinweise zu den Einstellungen, F
             shipping
         </td>
         <td>
-            <b>Inhalt:</b> Entsprechend der Formateinstellung <b>Versandkosten</b>.
+            Entsprechend der Formateinstellung <b>Versandkosten</b>.
         </td>        
     </tr>
     <tr>
@@ -268,7 +268,7 @@ In der folgenden Tabelle finden Sie spezifische Hinweise zu den Einstellungen, F
             tags
         </td>
         <td>
-            <b>Inhalt:</b> Die am Artikel konfigurierten Keywords.
+            Die am Artikel konfigurierten Keywords.
         </td>        
     </tr>
 </table>

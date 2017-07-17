@@ -11,16 +11,16 @@ Treepodia offers the possibility to automatically create product videos from ite
 
 The plugin Elastic Export is required to use this format.
 
-Auf der Handbuchseite [Daten exportieren](https://www.plentymarkets.eu/handbuch/datenaustausch/daten-exportieren/#4) werden die einzelnen Formateinstellungen beschrieben.
+Refer to the [Daten exportieren](https://www.plentymarkets.eu/handbuch/datenaustausch/daten-exportieren/#4) page of the manual for further details about the individual format settings.
 
-In the following table you will find specific hints for the settings, format settings and recommended item filters for the format **TreepodiaCOM-Plugin**.
+The following table lists details for settings, format settings and recommended item filters for the format **TreepodiaCOM-Plugin**.
 <table>
     <tr>
         <th>
             Settings
         </th>
         <th>
-            Explaination
+            Explanation
         </th>
     </tr>
     <tr>
@@ -38,7 +38,7 @@ In the following table you will find specific hints for the settings, format set
     </tr>
     <tr>
         <td>
-            Bereitstellung
+            Provisioning
         </td>
         <td>
             Choose <b>URL</b>.
@@ -49,7 +49,7 @@ In the following table you will find specific hints for the settings, format set
             File name
         </td>
         <td>
-            The file name must have the ending <b>.xml</b>, that treepodia is able to import the file successfully.
+            The file name must have the ending <b>.xml</b> for treepodia to be able to import the file successfully.
         </td>        
     </tr>
     <tr>
@@ -70,7 +70,7 @@ In the following table you will find specific hints for the settings, format set
             Markets
         </td>
         <td>
-            Choose one or multiple order referrer. The chosen order referrer has to be active at the variation, that the item would be exported.
+            Choose one or multiple order referrer. The chosen order referrer has to be active at the variation for the item to be exported.
         </td>        
     </tr>
     <tr>
@@ -91,7 +91,7 @@ In the following table you will find specific hints for the settings, format set
             Preview text
         </td>
         <td>
-        	This option is not relevant for this format.
+        	This option does not affect this format.
         </td>        
     </tr>
     <tr>
@@ -99,7 +99,7 @@ In the following table you will find specific hints for the settings, format set
 			Barcode
 		</td>
 		<td>
-			This option is not relevant for this format.
+			This option does not affect this format.
 		</td>        
 	</tr>
     <tr>
@@ -143,7 +143,7 @@ In the following table you will find specific hints for the settings, format set
             Tag description
         </th>
         <th>
-            Explaination
+            Explanation
         </th>
     </tr>
     <tr>
@@ -152,7 +152,7 @@ In the following table you will find specific hints for the settings, format set
         </td>
         <td>
             <b>Required</b><br>
-            <b>Content:</b> The <b>SKU</b> of the variation based on the chosen order referrer in the format settings.
+            The <b>SKU</b> of the variation based on the chosen order referrer in the format settings.
         </td>        
     </tr>
     <tr>
@@ -160,7 +160,7 @@ In the following table you will find specific hints for the settings, format set
             price.value
         </td>
         <td>
-            <b>Content:</b> The <b>retail price</b>.
+            The <b>retail price</b>.
         </td>        
     </tr>
     <tr>
@@ -168,7 +168,7 @@ In the following table you will find specific hints for the settings, format set
 			price.sale
 		</td>
 		<td>
-			<b>Content:</b> The <b>sales price</b>.
+			The <b>sales price</b>.
 		</td>        
 	</tr>
     <tr>
@@ -177,7 +177,7 @@ In the following table you will find specific hints for the settings, format set
         </td>
         <td>
             <b>Required</b><br>
-            <b>Content:</b> The <b>name</b> of the item depending on the chosen format setting <b>Item name</b>.
+            The <b>name</b> of the item depending on the chosen format setting <b>Item name</b>.
         </td>        
     </tr>
     <tr>
@@ -186,7 +186,7 @@ In the following table you will find specific hints for the settings, format set
         </td>
         <td>
             <b>Required</b><br>
-            <b>Content:</b> Der <b>Kategoriepfad der Standard-Kategorie</b> für den in den Formateinstellungen definierten <b>Mandanten</b>.
+            The <b>category path of the default category</b> for the defined client in the format settings.
         </td>        
     </tr>
     <tr>
@@ -195,7 +195,7 @@ In the following table you will find specific hints for the settings, format set
         </td>
         <td>
         	<b>Required</b><br>
-            <b>Content:</b> According to the format setting <b>description</b>.
+            According to the format setting <b>description</b>.
         </td>        
     </tr>
     <tr>
@@ -203,7 +203,7 @@ In the following table you will find specific hints for the settings, format set
             brand.name
         </td>
         <td>
-            <b>Content:</b> The <b>name of the manufacturer</b> of the item. Der <b>Externe Name</b> unter <b>Einstellungen » Artikel » Hersteller</b> wird bevorzugt, wenn vorhanden.
+            The <b>name of the manufacturer</b> of the item. The <b>external name</b> within the menu <b>Settings » Items » Manufacturer</b> will be preferred if existing.
         </td>        
     </tr>
     <tr>
@@ -211,7 +211,7 @@ In the following table you will find specific hints for the settings, format set
 			brand.logo
 		</td>
 		<td>
-			<b>Content:</b> The <b>logo of the manufacturer</b> of the item.
+			The <b>logo of the manufacturer</b> of the item.
 		</td>        
 	</tr>
     <tr>
@@ -220,7 +220,7 @@ In the following table you will find specific hints for the settings, format set
         </td>
         <td>
         	<b>Required</b><br>
-            <b>Content:</b> The product URL according to the format setting <b>product URL</b> and <b>order referrer</b>.
+            The product URL according to the format setting <b>product URL</b> and <b>order referrer</b>.
         </td>        
     </tr>
     <tr>
@@ -228,7 +228,7 @@ In the following table you will find specific hints for the settings, format set
             image-url
         </td>
         <td>
-            <b>Content:</b> URL zu dem Bild gemäß der Formateinstellungen <b>Bild</b>. Variantenbilder werden vor Artikelbildern priorisiert.
+        	URL of the image according to the format setting <b>Image</b>. Variation images are prioritized over item images.
         </td>        
     </tr>
     <tr>
@@ -236,7 +236,7 @@ In the following table you will find specific hints for the settings, format set
             attribute.name
         </td>
         <td>
-            <b>Content:</b> The attribute name of the item variation.
+            The attribute name of the item variation.
         </td>        
     </tr>
     <tr>
@@ -244,7 +244,7 @@ In the following table you will find specific hints for the settings, format set
 			attribute.value
 		</td>
 		<td>
-			<b>Content:</b> The attribute value name of the item variation.
+			The attribute value name of the item variation.
 		</td>        
 	</tr>
     <tr>
@@ -252,7 +252,7 @@ In the following table you will find specific hints for the settings, format set
             catch-phrase
         </td>
         <td>
-            <b>Content:</b> The freetext fields 1, 2, 3 and 4 which are configured on the item.
+            The freetext fields 1, 2, 3 and 4 which are configured for the item.
         </td>        
     </tr>
     <tr>
@@ -260,7 +260,7 @@ In the following table you will find specific hints for the settings, format set
             shipping
         </td>
         <td>
-            <b>Content:</b> According to the format setting <b>shipping costs</b>.
+            According to the format setting <b>shipping costs</b>.
         </td>        
     </tr>
     <tr>
@@ -268,13 +268,11 @@ In the following table you will find specific hints for the settings, format set
             tags
         </td>
         <td>
-            <b>Content:</b> The configured keywords on the item.
+            The configured keywords for the item.
         </td>        
     </tr>
 </table>
 
 ## 4 Licence
 
-This project is licensed under the GNU AFFERO GENERAL PUBLIC LICENSE.- find further information in the [LICENSE.md](https://github.com/plentymarkets/plugin-elastic-export-idealo-de/blob/master/LICENSE.md).
-
-Das gesamte Projekt unterliegt der GNU AFFERO GENERAL PUBLIC LICENSE – weitere Informationen finden Sie in der [LICENSE.md](https://github.com/plentymarkets/plugin-elastic-export-treepodia-com/blob/master/LICENSE.md).
+This project is licensed under the GNU AFFERO GENERAL PUBLIC LICENSE.- find further information in the [LICENSE.md](https://github.com/plentymarkets/plugin-elastic-export-treepodia-com/blob/master/LICENSE.md).
