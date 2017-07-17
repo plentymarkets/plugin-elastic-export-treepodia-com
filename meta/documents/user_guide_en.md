@@ -3,11 +3,11 @@
 
 <div class="container-toc"></div>
 
-## 1 Register at treepodia.com
+## 1 Registering with treepodia.com
 
-Treepodia bietet die Möglichkeit, aus Artikelbildern automatisch erzeugte Produkt-Videos in die SingleArticle-Ansicht von Webshopartikeln einzubinden.
+Treepodia offers the possibility to automatically create product videos from item images and to integrate them in the SingleArticle layout of store items.
 
-## 2 Configuring the format TreepodiaCOM-Plugin in plentymarkets
+## 2 Setting up the data format TreepodiaCOM-Plugin in plentymarkets
 
 The plugin Elastic Export is required to use this format.
 
