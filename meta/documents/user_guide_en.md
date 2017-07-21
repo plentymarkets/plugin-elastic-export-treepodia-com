@@ -11,7 +11,7 @@ Treepodia offers the possibility to automatically create product videos from ite
 
 The plugin Elastic Export is required to use this format.
 
-Refer to the [Daten exportieren](https://www.plentymarkets.eu/handbuch/datenaustausch/daten-exportieren/#4) page of the manual for further details about the individual format settings.
+Refer to the [Exporting data formats for price search engines](https://knowledge.plentymarkets.com/en/basics/data-exchange/exporting-data#30) page of the manual for further details about the individual format settings.
 
 The following table lists details for settings, format settings and recommended item filters for the format **TreepodiaCOM-Plugin**.
 <table>
