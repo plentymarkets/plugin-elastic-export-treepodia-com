@@ -224,7 +224,7 @@ class TreepodiaCOM extends XMLPluginGenerator
 		$this->root()->appendChild($product);
 
 		// sku
-		$product->appendChild($this->createElement('sku', $item['id']));
+		$product->appendChild($this->createElement('sku', $item['data']['item']['id']));
 
 		// price
 		$priceList = $this->elasticExportPriceHelper->getPriceList($item, $settings);
@@ -246,7 +246,8 @@ class TreepodiaCOM extends XMLPluginGenerator
 		}
 
 		// name
-		$product->appendChild($this->createElement('name', $this->elasticExportHelper->getMutatedName($item, $settings)));
+        $product->appendChild($name = $this->createElement('name'));
+        $name->appendChild($this->createCDATASection($this->elasticExportHelper->getMutatedName($item, $settings)));
 
 		// category, top category or full path allowed
 		$category = $this->getCategoryPath($item, $settings);

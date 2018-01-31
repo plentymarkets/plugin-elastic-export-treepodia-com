@@ -1,5 +1,16 @@
 # Release Notes für Elastic Export treepodia.com
 
+## v1.0.6 (2018-01-31)
+
+### Behoben
+- Die SKU basiert nun auf der Artikel-ID.
+- CDATA wird auf das Element "Name" angewendet.
+
+## v1.0.5 (2018-01-15)
+
+### Behoben
+- Die SKU wird nun basierend auf der Varianten ID statt der Artikel ID exportiert.
+
 ## v1.0.4 (2017-06-30)
 
 ### Geändert
