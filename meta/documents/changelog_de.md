@@ -4,6 +4,7 @@
 
 ### Behoben
 - Bilder werden nun in der korrekten Reihenfolge ausgegeben.
+- Die Freitextfelder 1 bis 4 werden wieder korrekt ausgegeben.
 
 ## v1.0.6 (2018-01-31)
 
