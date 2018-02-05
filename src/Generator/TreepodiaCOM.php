@@ -2,6 +2,7 @@
 
 namespace ElasticExportTreepodiaCOM\Generator;
 
+use ElasticExport\Helper\ElasticExportItemHelper;
 use ElasticExport\Helper\ElasticExportPriceHelper;
 use ElasticExport\Helper\ElasticExportStockHelper;
 use Plenty\Modules\Category\Models\CategoryBranch;
@@ -64,7 +65,6 @@ class TreepodiaCOM extends XMLPluginGenerator
 	 */
 	private $attributeValueCache = [];
 
-
     /**
      * @var ElasticExportCoreHelper $elasticExportHelper
      */
@@ -81,24 +81,29 @@ class TreepodiaCOM extends XMLPluginGenerator
     private $elasticExportPriceHelper;
 
     /*
-     * @var ArrayHelper
+     * @var ArrayHelper $arrayHelper
      */
     private $arrayHelper;
 
     /**
-     * CategoryBranchRepositoryContract $categoryBranchRepository
+     * @var CategoryBranchRepositoryContract $categoryBranchRepository
      */
     private $categoryBranchRepository;
 
     /**
-     * CategoryRepositoryContract $categoryRepository
+     * @var CategoryRepositoryContract $categoryRepository
      */
     private $categoryRepository;
 
     /**
-     * ManufacturerRepositoryContract $manufacturerRepository
+     * @var ManufacturerRepositoryContract $manufacturerRepository
      */
     private $manufacturerRepository;
+
+    /**
+     * @var ElasticExportItemHelper $elasticExportItemHelper
+     */
+    private $elasticExportItemHelper;
 
     /**
      * TreepodiaDE constructor.
@@ -133,6 +138,7 @@ class TreepodiaCOM extends XMLPluginGenerator
         $this->elasticExportHelper = pluginApp(ElasticExportCoreHelper::class);
         $this->elasticExportStockHelper = pluginApp(ElasticExportStockHelper::class);
         $this->elasticExportPriceHelper = pluginApp(ElasticExportPriceHelper::class);
+        $this->elasticExportItemHelper = pluginApp(ElasticExportItemHelper::class);
         
 		$settings = $this->arrayHelper->buildMapFromObjectList($formatSettings, 'key', 'value');
 		
@@ -305,7 +311,7 @@ class TreepodiaCOM extends XMLPluginGenerator
 		// image-url
 		$product->appendChild($imageTag = $this->createElement('image'));
 
-		foreach($this->elasticExportHelper->getImageList($item, $settings) as $image)
+        foreach($this->elasticExportHelper->getImageListInOrder($item, $settings) as $image)
 		{
 			$imageTag->appendChild($this->createElement('url', $image));
 		}
@@ -339,9 +345,10 @@ class TreepodiaCOM extends XMLPluginGenerator
 		}
 
 		// catch-phrase
-		foreach($this->getCatchPhraseList($item) as $catchPhrase)
+		foreach($this->getCatchPhraseList($item['data']['item']['id']) as $catchPhrase)
 		{
-			$product->appendChild($this->createElement('catch-phrase', htmlspecialchars($catchPhrase)));
+			$product->appendChild($catchPhraseTag = $this->createElement('catch-phrase'));
+			$catchPhraseTag->appendChild($this->createCDATASection(htmlspecialchars($catchPhrase)));
 		}
 
 		// shipping
@@ -450,16 +457,16 @@ class TreepodiaCOM extends XMLPluginGenerator
     /**
      * Get catch phrase list.
 	 *
-     * @param array $item
+     * @param int $itemId
      * @return array
      */
-    private function getCatchPhraseList($item):array
+    private function getCatchPhraseList($itemId):array
     {
         $list = [
-            $item['data']['item']['free1'],
-            $item['data']['item']['free2'],
-            $item['data']['item']['free3'],
-            $item['data']['item']['free4'],
+            $this->elasticExportItemHelper->getFreeFields($itemId, 1),
+            $this->elasticExportItemHelper->getFreeFields($itemId, 2),
+            $this->elasticExportItemHelper->getFreeFields($itemId, 3),
+            $this->elasticExportItemHelper->getFreeFields($itemId, 4),
         ];
 
         $filteredList = [];
