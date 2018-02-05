@@ -1,5 +1,10 @@
 # Release Notes for Elastic Export treepodia.com
 
+## v1.0.7 (2018-02-05)
+
+### Fixed
+- Images will now be exported in the right order.
+
 ## v1.0.6 (2018-01-31)
 
 ### Behoben

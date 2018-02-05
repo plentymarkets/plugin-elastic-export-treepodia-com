@@ -305,7 +305,7 @@ class TreepodiaCOM extends XMLPluginGenerator
 		// image-url
 		$product->appendChild($imageTag = $this->createElement('image'));
 
-		foreach($this->elasticExportHelper->getImageList($item, $settings) as $image)
+        foreach($this->elasticExportHelper->getImageListInOrder($item, $settings) as $image)
 		{
 			$imageTag->appendChild($this->createElement('url', $image));
 		}

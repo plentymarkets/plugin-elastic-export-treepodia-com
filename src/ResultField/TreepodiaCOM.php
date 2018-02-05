@@ -2,6 +2,8 @@
 
 namespace ElasticExportTreepodiaCOM\ResultField;
 
+use ElasticExport\DataProvider\ResultFieldDataProvider;
+use ElasticExport\Helper\ElasticExportCoreHelper;
 use Plenty\Modules\DataExchange\Contracts\ResultFields;
 use Plenty\Modules\DataExchange\Models\FormatSetting;
 use Plenty\Modules\Helper\Services\ArrayHelper;
@@ -40,45 +42,13 @@ class TreepodiaCOM extends ResultFields
      */
     public function generateResultFields(array $formatSettings = []):array
     {
+        /** @var ResultFieldDataProvider $resultFieldsDataProvider */
+        $resultFieldsDataProvider = pluginApp(ResultFieldDataProvider::class);
+        
         $settings = $this->arrayHelper->buildMapFromObjectList($formatSettings, 'key', 'value');
-
         $reference = $settings->get('referrerId') ? $settings->get('referrerId') : -1;
-
-        $itemDescriptionFields = ['texts.urlPath'];
-        $itemDescriptionFields[] = 'texts.keywords';
-		$itemDescriptionFields[] = 'texts.lang';
-
-        switch($settings->get('nameId'))
-        {
-            case 1:
-                $itemDescriptionFields[] = 'texts.name1';
-                break;
-            case 2:
-                $itemDescriptionFields[] = 'texts.name2';
-                break;
-            case 3:
-                $itemDescriptionFields[] = 'texts.name3';
-                break;
-            default:
-                $itemDescriptionFields[] = 'texts.name1';
-                break;
-        }
-
-        if($settings->get('descriptionType') == 'itemShortDescription' || $settings->get('previewTextType') == 'itemShortDescription')
-        {
-            $itemDescriptionFields[] = 'texts.shortDescription';
-        }
-
-        if($settings->get('descriptionType') == 'itemDescription'
-            || $settings->get('descriptionType') == 'itemDescriptionAndTechnicalData'
-            || $settings->get('previewTextType') == 'itemDescription'
-            || $settings->get('previewTextType') == 'itemDescriptionAndTechnicalData')
-        {
-            $itemDescriptionFields[] = 'texts.description';
-        }
-
-        $itemDescriptionFields[] = 'texts.technicalData';
-
+        $resultFields = $resultFieldsDataProvider->getResultFields($settings);
+        
         //Mutator
 
         /**
@@ -118,57 +88,7 @@ class TreepodiaCOM extends ResultFields
 		}
 
         $fields = [
-            [
-                //item
-                'item.id',
-                'item.manufacturer.id',
-                'item.free1',
-                'item.free2',
-                'item.free3',
-                'item.free4',
-
-                //variation
-                'id',
-                'variation.availability.id',
-                'variation.stockLimitation',
-                'variation.vatId',
-                'variation.model',
-				'variation.id',
-
-                //images
-                'images.item.urlMiddle',
-                'images.item.urlPreview',
-                'images.item.urlSecondPreview',
-                'images.item.url',
-                'images.item.path',
-                'images.item.position',
-
-                'images.variation.urlMiddle',
-                'images.variation.urlPreview',
-                'images.variation.urlSecondPreview',
-                'images.variation.url',
-                'images.variation.path',
-                'images.variation.position',
-
-                //categories
-                'categories.all',
-
-                //unit
-                'unit.content',
-                'unit.id',
-
-                //defaultCategories
-                'defaultCategories.id',
-
-                //barcodes
-                'barcodes.code',
-                'barcodes.type',
-
-                //attributes
-                'attributes.attributeValueSetId',
-                'attributes.attributeId',
-                'attributes.valueId',
-            ],
+            $resultFields,
             [
                 $languageMutator,
                 $defaultCategoryMutator,
@@ -179,11 +99,6 @@ class TreepodiaCOM extends ResultFields
         if($reference != -1)
         {
             $fields[1][] = $imageMutator;
-        }
-
-        foreach($itemDescriptionFields as $itemDescriptionField)
-        {
-            $fields[0][] = $itemDescriptionField;
         }
 
         return $fields;
@@ -227,6 +142,8 @@ class TreepodiaCOM extends ResultFields
 		$nestedKeyList['keys'] = [
 			//images
 			'images.all',
+            'images.variation',
+            'images.item',
 
 			//sku
 			'skus',
@@ -253,6 +170,15 @@ class TreepodiaCOM extends ResultFields
 				'path',
 				'position',
 			],
+
+            'images.all' => [
+                'urlMiddle',
+                'urlPreview',
+                'urlSecondPreview',
+                'url',
+                'path',
+                'position',
+            ],
 
 			'images.variation' => [
 				'urlMiddle',
