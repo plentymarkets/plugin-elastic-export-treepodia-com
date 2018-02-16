@@ -10,13 +10,13 @@
   "pluginIcon": "icon_plugin_md.png",
   "price": 0.00,
   "shortDescription": {
-    "de": "Das Plugin treepodia.com fügt das Datenformat TreepodiaCOM zum Elastischen Export hinzu.",
-    "en": "This plugin adds the format TreepodiaCOM to the Elastic Export."
+    "de": "Die Integration des Datenformats Treepodia-Plugin ermöglicht die Artikeldatenübertragung zum Affiliate-Dienstleister Treepodia über den elastischen Export.",
+    "en": "The integration of the data format Treepodia-Plugin enables the transfer of item data to the affiliate service provider Treepodia via the elastic export."
   },
   "categories": [
     "3523"
   ],
-  "version": "1.0.7",
+  "version": "1.0.6",
   "require": ["ElasticExport"],
   "marketplaceName": {
     "de": "treepodia.com",
