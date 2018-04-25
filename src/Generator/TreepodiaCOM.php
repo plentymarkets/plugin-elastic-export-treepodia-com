@@ -5,6 +5,7 @@ namespace ElasticExportTreepodiaCOM\Generator;
 use ElasticExport\Helper\ElasticExportItemHelper;
 use ElasticExport\Helper\ElasticExportPriceHelper;
 use ElasticExport\Helper\ElasticExportStockHelper;
+use ElasticExport\Services\FiltrationService;
 use Plenty\Modules\Category\Models\CategoryBranch;
 use Plenty\Modules\DataExchange\Contracts\XMLPluginGenerator;
 use Plenty\Modules\Helper\Services\ArrayHelper;
@@ -106,6 +107,11 @@ class TreepodiaCOM extends XMLPluginGenerator
     private $elasticExportItemHelper;
 
     /**
+     * @var FiltrationService
+     */
+    private $filtrationService;
+
+    /**
      * TreepodiaDE constructor.
 	 *
      * @param ArrayHelper $arrayHelper
@@ -141,6 +147,7 @@ class TreepodiaCOM extends XMLPluginGenerator
         $this->elasticExportItemHelper = pluginApp(ElasticExportItemHelper::class);
         
 		$settings = $this->arrayHelper->buildMapFromObjectList($formatSettings, 'key', 'value');
+		$this->filtrationService = pluginApp(FiltrationService::class, [$settings, $filter]);
 		
 		$limitReached = false;
 		$lines = 0;
@@ -178,7 +185,7 @@ class TreepodiaCOM extends XMLPluginGenerator
 				{
 					foreach($resultList['documents'] as $item)
 					{
-						if($this->elasticExportStockHelper->isFilteredByStock($item, $filter))
+						if($this->filtrationService->filter($item))
 						{
 							continue;
 						}
