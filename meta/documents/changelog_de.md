@@ -3,7 +3,7 @@
 ## v1.0.10 (2018-04-30)
 
 ### Geändert
-- Laravel 5.5 update.
+- Laravel 5.5 Update.
 
 ## v1.0.9 (2018-04-25)
 
