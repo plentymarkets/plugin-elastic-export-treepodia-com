@@ -147,7 +147,7 @@ class TreepodiaCOM extends XMLPluginGenerator
         $this->elasticExportItemHelper = pluginApp(ElasticExportItemHelper::class);
         
 		$settings = $this->arrayHelper->buildMapFromObjectList($formatSettings, 'key', 'value');
-		$this->filtrationService = pluginApp(FiltrationService::class, [$settings, $filter]);
+		$this->filtrationService = pluginApp(FiltrationService::class, ['settings' => $settings, 'filterSettings' => $filter]);
 		
 		$limitReached = false;
 		$lines = 0;
