@@ -1,5 +1,10 @@
 # Release Notes für Elastic Export treepodia.com
 
+## v1.0.11 (2018-07-25)
+
+### Geändert
+- Dem User Guide wurden weitere Informationen zur Einrichtung des Plugins hinzugefügt.
+
 ## v1.0.10 (2018-04-30)
 
 ### Geändert
