@@ -1,5 +1,10 @@
 # Release Notes for Elastic Export treepodia.com
 
+## v1.0.12 (2019-01-23)
+
+### Changed
+- An incorrect link in the user guide was corrected.
+
 ## v1.0.11 (2018-07-25)
 
 ### Changed

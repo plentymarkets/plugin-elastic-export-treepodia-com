@@ -11,7 +11,7 @@ Treepodia offers the possibility to automatically create product videos from ite
 
 By installing this plugin you will receive the export format **TreepodiaCOM-Plugin**. Use this format to exchange data between plentymarkets and Treepodia. It is required to install the Plugin **Elastic Export** from the plentyMarketplace first before you can use the format **TreepodiaCOM-Plugin** in plentymarkets.
 
-Once both plugins are installed, you can create the export format **TreepodiaCOM-Plugin**. Refer to the [Exporting data with the dynamic import](https://knowledge.plentymarkets.com/en/basics/data-exchange/export-import/exporting-data#30) page of the manual for further details about the individual format settings.
+Once both plugins are installed, you can create the export format **TreepodiaCOM-Plugin**. Refer to the [Elastic Export](https://knowledge.plentymarkets.com/en/basics/data-exchange/elastic-export) page of the manual for further details about the individual format settings.
 
 Creating a new export format:
 

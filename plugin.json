@@ -14,9 +14,9 @@
     "en": "The integration of the data format Treepodia-Plugin enables the transfer of item data to the affiliate service provider Treepodia via the elastic export."
   },
   "categories": [
-    "3523"
+    "3880"
   ],
-  "version": "1.0.11",
+  "version": "1.0.12",
   "require": ["ElasticExport"],
   "marketplaceName": {
     "de": "treepodia.com",
