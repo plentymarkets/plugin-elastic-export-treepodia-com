@@ -2,7 +2,7 @@
   "name": "ElasticExportTreepodiaCOM",
   "description": "This plugin adds the format TreepodiaCOM to the Elastic Export.",
   "namespace": "ElasticExportTreepodiaCOM",
-  "author": "plentymarkets GmbH",
+  "author": "plentysystems AG",
   "type": "export",
   "authorIcon": "icon_author_xs.png",
   "serviceProvider": "ElasticExportTreepodiaCOM\\ElasticExportTreepodiaCOMServiceProvider",
@@ -16,7 +16,7 @@
   "categories": [
     "3880"
   ],
-  "version": "1.0.12",
+  "version": "1.0.13",
   "require": ["ElasticExport"],
   "marketplaceName": {
     "de": "treepodia.com",
