@@ -172,7 +172,7 @@ class TreepodiaCOM extends XMLPluginGenerator
 					'Elastic Search duration' => microtime(true) - $esStartTime,
 				]);
 
-				if(count($resultList['error']) > 0)
+				if(count($resultList['error'] ?? []) > 0)
 				{
 					$this->getLogger(__METHOD__)->error('ElasticExportTreepodiaCOM::log.occurredElasticSearchErrors', [
 						'error message' => $resultList['error'],
@@ -181,7 +181,7 @@ class TreepodiaCOM extends XMLPluginGenerator
 
 				$buildRowStartTime = microtime(true);
 
-				if(is_array($resultList['documents']) && count($resultList['documents']) > 0)
+				if(is_array($resultList['documents']) && count($resultList['documents'] ?? []) > 0)
 				{
 					foreach($resultList['documents'] as $item)
 					{
@@ -324,7 +324,7 @@ class TreepodiaCOM extends XMLPluginGenerator
 		}
 
 		// attributes
-		if(count($item['data']['attributes']))
+		if(count($item['data']['attributes'] ?? []))
 		{
 			foreach($item['data']['attributes'] as $attribute)
 			{
@@ -377,7 +377,7 @@ class TreepodiaCOM extends XMLPluginGenerator
 			}
 		}
 
-		if(count($keyList))
+		if(count($keyList ?? []))
 		{
 			$product->appendChild($tagsTag = $this->createElement('tags'));
 			$tagsTag->appendChild($this->createCDATASection(implode(', ', $keyList)));
