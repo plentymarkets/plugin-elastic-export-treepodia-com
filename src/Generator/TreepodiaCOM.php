@@ -441,9 +441,9 @@ class TreepodiaCOM extends XMLPluginGenerator
      * Returns the manufacturer by ID.
 	 *
      * @param int $manufacturerId
-     * @return Manufacturer
+     * @return Manufacturer|null
      */
-    public function getManufacturer(int $manufacturerId):Manufacturer
+    public function getManufacturer(int $manufacturerId):?Manufacturer
     {
     	if(!in_array($manufacturerId, $this->manufacturerCache))
 		{
@@ -457,6 +457,12 @@ class TreepodiaCOM extends XMLPluginGenerator
 				$this->manufacturerCache[$manufacturerId] = $manufacturer;
 			}
 		}
+
+        if(!isset($this->manufacturerCache[$manufacturerId])){
+            $this->getLogger(__METHOD__)->error('ElasticExportTreepodiaCOM::log.errorManufacturer', [
+                'manufacturerId' => $manufacturerId,
+            ]);
+        }
 
 		return $this->manufacturerCache[$manufacturerId];
     }
