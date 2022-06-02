@@ -1,5 +1,10 @@
 # Release Notes for Elastic Export treepodia.com
 
+## v1.0.15 (2022-06-02)
+
+### Fixed
+- Fixed php8 issue
+
 ## v1.0.14 (2022-05-26)
 
 ### Changed

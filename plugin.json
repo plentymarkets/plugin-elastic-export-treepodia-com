@@ -16,7 +16,7 @@
   "categories": [
     "3880"
   ],
-  "version": "1.0.14",
+  "version": "1.0.15",
   "require": {
     "ElasticExport": ">= 1.6.6"
   },
