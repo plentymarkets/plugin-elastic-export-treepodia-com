@@ -23,5 +23,8 @@
   "marketplaceName": {
     "de": "treepodia.com",
     "en": "treepodia.com"
+  },
+  "platform": {
+    "php": ">=7.3 <8.1"
   }
 }
