@@ -443,7 +443,7 @@ class TreepodiaCOM extends XMLPluginGenerator
      * @param int $manufacturerId
      * @return Manufacturer|null
      */
-    public function getManufacturer(int $manufacturerId):?Manufacturer
+    public function getManufacturer(int $manufacturerId): ?Manufacturer
     {
     	if(!in_array($manufacturerId, $this->manufacturerCache))
 		{
